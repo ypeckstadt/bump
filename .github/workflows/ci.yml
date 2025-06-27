@@ -1,4 +1,4 @@
-name: DVOM CI
+name: Bump CI
 
 on:
   push:
