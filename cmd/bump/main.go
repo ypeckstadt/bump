@@ -35,6 +35,21 @@ It provides both interactive and quick release modes with git integration.`,
 	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", false, "Show what would happen without making changes")
 	rootCmd.PersistentFlags().BoolVar(&cfg.Verbose, "verbose", false, "Enable verbose output")
 
+	// Add standard --version flag for CI compatibility
+	var showVersion bool
+	rootCmd.PersistentFlags().BoolVar(&showVersion, "version", false, "Show version and exit")
+
+	// Override the default run function to handle --version flag
+	originalRun := rootCmd.Run
+	rootCmd.Run = func(cmd *cobra.Command, args []string) {
+		if showVersion {
+			buildInfo := version.Get()
+			fmt.Printf("%s\n", buildInfo.Version)
+			return
+		}
+		originalRun(cmd, args)
+	}
+
 	var showBuildInfo bool
 	var showRepo bool
 	versionCmd := &cobra.Command{

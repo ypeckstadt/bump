@@ -49,6 +49,7 @@ bump quick major    # v1.2.3 → v2.0.0
 ```bash
 # Show bump tool version (for CI/scripts)
 bump version                    # Output: 1.0.0
+bump --version                  # Output: 1.0.0
 
 # Show detailed build information
 bump version --build-info

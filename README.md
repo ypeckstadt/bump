@@ -63,6 +63,7 @@ bump quick major
 ```bash
 # Show bump tool version (CI-friendly)
 bump version                    # 1.0.0
+bump --version                  # 1.0.0
 
 # Show repository version from git tags  
 bump status                     # Current repository version: v1.2.3
