@@ -47,11 +47,15 @@ bump quick major    # v1.2.3 → v2.0.0
 ### Version Information
 
 ```bash
-# Show current git tag version
-bump version
+# Show bump tool version (for CI/scripts)
+bump version                    # Output: 1.0.0
 
-# Show build information
+# Show detailed build information
 bump version --build-info
+
+# Show current repository version from git tags
+bump version --repo             # Output: Repository version: v1.2.3
+bump status                     # Output: Current repository version: v1.2.3
 ```
 
 ## Global Flags

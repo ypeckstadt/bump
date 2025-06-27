@@ -36,9 +36,10 @@ It provides both interactive and quick release modes with git integration.`,
 	rootCmd.PersistentFlags().BoolVar(&cfg.Verbose, "verbose", false, "Enable verbose output")
 
 	var showBuildInfo bool
+	var showRepo bool
 	versionCmd := &cobra.Command{
 		Use:   "version",
-		Short: "Show current version",
+		Short: "Show bump tool version",
 		Run: func(cmd *cobra.Command, args []string) {
 			if showBuildInfo {
 				buildInfo := version.Get()
@@ -46,13 +47,18 @@ It provides both interactive and quick release modes with git integration.`,
 				fmt.Printf("Git Commit: %s\n", buildInfo.GitCommit)
 				fmt.Printf("Build Date: %s\n", buildInfo.BuildDate)
 				fmt.Printf("Go Version: %s\n", buildInfo.GoVersion)
-			} else {
+			} else if showRepo {
 				currentVersion := bump.GetCurrentVersion()
-				fmt.Printf("Current version: %s\n", currentVersion)
+				fmt.Printf("Repository version: %s\n", currentVersion)
+			} else {
+				// Show tool version by default (for CI compatibility)
+				buildInfo := version.Get()
+				fmt.Printf("%s\n", buildInfo.Version)
 			}
 		},
 	}
-	versionCmd.Flags().BoolVar(&showBuildInfo, "build-info", false, "Show build information")
+	versionCmd.Flags().BoolVar(&showBuildInfo, "build-info", false, "Show detailed build information")
+	versionCmd.Flags().BoolVar(&showRepo, "repo", false, "Show current repository version")
 
 	quickCmd := &cobra.Command{
 		Use:   "quick [patch|minor|major]",
@@ -71,7 +77,16 @@ It provides both interactive and quick release modes with git integration.`,
 		},
 	}
 
-	rootCmd.AddCommand(versionCmd, quickCmd, interactiveCmd)
+	statusCmd := &cobra.Command{
+		Use:   "status",
+		Short: "Show current repository version and status",
+		Run: func(cmd *cobra.Command, args []string) {
+			currentVersion := bump.GetCurrentVersion()
+			fmt.Printf("Current repository version: %s\n", currentVersion)
+		},
+	}
+
+	rootCmd.AddCommand(versionCmd, quickCmd, interactiveCmd, statusCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)

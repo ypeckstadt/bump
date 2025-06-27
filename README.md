@@ -61,8 +61,15 @@ bump quick major
 ### Other Commands
 
 ```bash
-# Show current version
-bump version
+# Show bump tool version (CI-friendly)
+bump version                    # 1.0.0
+
+# Show repository version from git tags  
+bump status                     # Current repository version: v1.2.3
+bump version --repo
+
+# Show detailed build info
+bump version --build-info
 
 # Dry run mode (preview without changes)
 bump --dry-run
