@@ -31,17 +31,3 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update Homebrew Formula
-        uses: mislav/bump-homebrew-formula-action@v3
-        with:
-          formula-name: bump
-          formula-path: Formula/bump.rb
-          homebrew-tap: ypeckstadt/homebrew-tap
-          download-url: https://github.com/${{ github.repository }}/archive/${{ github.ref_name }}.tar.gz
-          commit-message: |
-            Update bump to ${{ github.ref_name }}
-            
-            Created by https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        env:
-          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}

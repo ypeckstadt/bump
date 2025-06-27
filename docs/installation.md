@@ -4,40 +4,68 @@ This guide covers different ways to install Bump on your system.
 
 ## Installation Methods
 
-### Go Install (Recommended)
+### Homebrew (Recommended for macOS/Linux)
 
-If you have Go installed:
+The easiest way to install Bump:
 
 ```bash
-go install github.com/yourusername/bump/cmd/bump@latest
+# Add the custom tap
+brew tap ypeckstadt/tap
+
+# Install bump
+brew install bump
+
+# Verify installation
+bump --version
 ```
+
+### Go Install
+
+If you have Go 1.22+ installed:
+
+```bash
+go install github.com/ypeckstadt/bump/cmd/bump@latest
+```
+
+**Note:** Make sure your `$GOPATH/bin` is in your PATH.
 
 ### Download Binary
 
 Download the latest release from GitHub:
 
-1. Visit the [Releases page](https://github.com/yourusername/bump/releases)
+1. Visit the [Releases page](https://github.com/ypeckstadt/bump/releases)
 2. Download the appropriate binary for your platform
-3. Extract and move to your PATH
+3. Extract and move to your PATH:
+
+```bash
+# macOS/Linux example
+tar -xzf bump-darwin-amd64.tar.gz
+sudo mv bump /usr/local/bin/
+
+# Or add to personal bin directory
+mkdir -p ~/bin
+mv bump ~/bin/
+echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
 
 ### Build from Source
 
+For developers or custom builds:
+
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/bump.git
+git clone https://github.com/ypeckstadt/bump.git
 cd bump
+
+# Install development dependencies
+make dev-deps
 
 # Build the binary
 make build
 
 # Install to your PATH
 make install
-```
-
-### Homebrew (macOS/Linux)
-
-```bash
-brew install yourusername/tap/bump
 ```
 
 ## Verify Installation
@@ -54,7 +82,9 @@ bump version --build-info
 
 - **Operating System**: Linux, macOS, Windows
 - **Git**: Required for git operations
-- **Go**: 1.24+ (if building from source)
+- **Go**: 1.22+ (if building from source or using `go install`)
+
+**Note:** Bump is tested on Go 1.22 and 1.23 in CI.
 
 ## Optional Dependencies
 

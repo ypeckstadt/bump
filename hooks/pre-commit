@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Pre-commit hook that runs make build, make lint, and make security before committing
+
+echo "Running pre-commit checks..."
+
+# Run make build
+echo "Running make build..."
+if ! make build; then
+    echo "❌ Build failed. Please fix build errors before committing."
+    exit 1
+fi
+
+# Run make lint
+echo "Running make lint..."
+if ! make lint; then
+    echo "❌ Lint check failed. Please fix linting errors before committing."
+    exit 1
+fi
+
+# Run make security
+echo "Running make security..."
+if ! make security; then
+    echo "❌ Security scan failed. Please fix security issues before committing."
+    exit 1
+fi
+
+echo "✅ All pre-commit checks passed!"
+exit 0

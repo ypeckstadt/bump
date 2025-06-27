@@ -1,0 +1,110 @@
+project_name: bump
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: bump
+    main: ./cmd/bump
+    binary: bump
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X bump/pkg/version.Version={{.Version}}
+      - -X bump/pkg/version.GitCommit={{.Commit}}
+      - -X bump/pkg/version.BuildDate={{.Date}}
+
+archives:
+  - id: bump
+    builds:
+      - bump
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE*
+      - docs/**/*
+
+checksum:
+  name_template: "checksums.txt"
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"
+      - "^style:"
+  groups:
+    - title: Features
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: 'Bug fixes'
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 1
+    - title: Others
+      order: 999
+
+release:
+  github:
+    owner: ypeckstadt
+    name: bump
+  draft: false
+  prerelease: auto
+  mode: replace
+  header: |
+    ## Bump {{ .Tag }} Release
+
+    A Go CLI tool for semantic version management and releases.
+
+  footer: |
+    ## Installation
+
+    ### Homebrew
+    ```bash
+    brew tap ypeckstadt/tap
+    brew install bump
+    ```
+
+    ### Go Install
+    ```bash
+    go install github.com/ypeckstadt/bump/cmd/bump@{{ .Tag }}
+    ```
+
+    ### Binary Installation
+    Download the appropriate binary for your platform from the assets above.
+
+brews:
+  - name: bump
+    repository:
+      owner: ypeckstadt
+      name: homebrew-tap
+      branch: main
+    homepage: "https://github.com/ypeckstadt/bump"
+    description: "A Go CLI tool for semantic version management and releases"
+    license: "MIT"
+    test: |
+      system "#{bin}/bump --version"
+    install: |
+      bin.install "bump"

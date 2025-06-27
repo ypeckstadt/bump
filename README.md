@@ -2,6 +2,21 @@
 
 A Go CLI tool for semantic version management and releases, inspired by shell release scripts.
 
+## Quick Start
+
+```bash
+# Install via Homebrew (recommended)
+brew tap ypeckstadt/tap
+brew install bump
+
+# Or install with Go
+go install github.com/ypeckstadt/bump/cmd/bump@latest
+
+# Start using bump
+bump --version
+bump                    # Interactive release mode
+```
+
 ## Features
 
 - 🚀 **Interactive Release Mode** - Full-featured with prompts, validation, and pre-release checks
@@ -13,16 +28,67 @@ A Go CLI tool for semantic version management and releases, inspired by shell re
 
 ## Installation
 
+### Option 1: Homebrew (Recommended for macOS/Linux)
+
 ```bash
-go install github.com/yourusername/bump@latest
+# Add the custom tap
+brew tap ypeckstadt/tap
+
+# Install bump
+brew install bump
 ```
 
-Or build from source:
+### Option 2: Go Install
 
 ```bash
-git clone https://github.com/yourusername/bump
+# Install directly with Go (requires Go 1.22+)
+go install github.com/ypeckstadt/bump/cmd/bump@latest
+```
+
+### Option 3: Download Binary
+
+1. Visit the [Releases page](https://github.com/ypeckstadt/bump/releases)
+2. Download the appropriate binary for your platform
+3. Extract and move to your PATH:
+
+```bash
+# macOS/Linux
+sudo mv bump /usr/local/bin/
+
+# Or add to your personal bin directory
+mv bump ~/bin/
+```
+
+### Option 4: Build from Source
+
+```bash
+# Clone and build
+git clone https://github.com/ypeckstadt/bump
 cd bump
-go build -o bump
+make build
+
+# Install to your PATH
+make install
+```
+
+### Verify Installation
+
+```bash
+# Check installation
+bump --version
+
+# Show detailed build info
+bump version --build-info
+```
+
+### Updating Bump
+
+```bash
+# Update via Homebrew
+brew upgrade bump
+
+# Update via Go install
+go install github.com/ypeckstadt/bump/cmd/bump@latest
 ```
 
 ## Usage
@@ -89,6 +155,51 @@ bump --help
 | **Patch** | Bug fixes, security patches | v1.2.3 → v1.2.4 |
 | **Minor** | New features, backward compatible | v1.2.3 → v1.3.0 |
 | **Major** | Breaking changes, major rewrites | v1.2.3 → v2.0.0 |
+
+## Troubleshooting
+
+### Homebrew Installation Issues
+
+If you encounter issues with the Homebrew installation:
+
+```bash
+# Update Homebrew first
+brew update
+
+# If tap already exists, update it
+brew tap ypeckstadt/tap --force
+
+# Reinstall if needed
+brew uninstall bump
+brew install bump
+```
+
+### Go Install Issues
+
+If `go install` fails:
+
+```bash
+# Check Go version (needs 1.22+)
+go version
+
+# Clear module cache if needed
+go clean -modcache
+go install github.com/ypeckstadt/bump/cmd/bump@latest
+```
+
+### Binary Not Found
+
+If `bump` command is not found after installation:
+
+```bash
+# For Go install, add GOPATH/bin to PATH
+echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# For Homebrew, ensure Homebrew bin is in PATH
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.bashrc  # Apple Silicon
+echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bashrc     # Intel Mac
+```
 
 ## Examples
 
