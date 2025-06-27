@@ -101,7 +101,7 @@ brews:
       owner: ypeckstadt
       name: homebrew-tap
       branch: main
-      token: "{{ .Env.GITHUB_TOKEN }}"
+      token: "{{ .Env.COMMITTER_TOKEN }}"
     homepage: "https://github.com/ypeckstadt/bump"
     description: "A Go CLI tool for semantic version management and releases"
     license: "MIT"
