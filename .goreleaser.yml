@@ -3,6 +3,7 @@ project_name: bump
 before:
   hooks:
     - go mod tidy
+    - go generate ./...
 
 builds:
   - id: bump
@@ -17,28 +18,33 @@ builds:
     goarch:
       - amd64
       - arm64
+      - arm
+    goarm:
+      - 6
+      - 7
     ignore:
       - goos: windows
         goarch: arm64
+      - goos: windows
+        goarch: arm
     ldflags:
       - -s -w
-      - -X bump/pkg/version.Version={{.Version}}
-      - -X bump/pkg/version.GitCommit={{.Commit}}
-      - -X bump/pkg/version.BuildDate={{.Date}}
+      - -X github.com/ypeckstadt/bump/pkg/version.Version={{.Version}}
+      - -X github.com/ypeckstadt/bump/pkg/version.Commit={{.Commit}}
+      - -X github.com/ypeckstadt/bump/pkg/version.Date={{.Date}}
 
 archives:
   - id: bump
     builds:
       - bump
-    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     format: tar.gz
     format_overrides:
       - goos: windows
         format: zip
     files:
       - README.md
-      - LICENSE*
-      - docs/**/*
+      - LICENSE
 
 checksum:
   name_template: "checksums.txt"
@@ -76,35 +82,30 @@ release:
   header: |
     ## Bump {{ .Tag }} Release
 
-    A Go CLI tool for semantic version management and releases.
+    Bump - Release a new version of your project with ease.
 
   footer: |
     ## Installation
 
-    ### Homebrew
-    ```bash
-    brew tap ypeckstadt/tap
-    brew install bump
-    ```
+    ### Binary Installation
+    Download the appropriate binary for your platform from the assets above.
 
     ### Go Install
     ```bash
     go install github.com/ypeckstadt/bump/cmd/bump@{{ .Tag }}
     ```
 
-    ### Binary Installation
-    Download the appropriate binary for your platform from the assets above.
 
-brews:
-  - name: bump
-    repository:
-      owner: ypeckstadt
-      name: homebrew-tap
-      branch: main
-    homepage: "https://github.com/ypeckstadt/bump"
-    description: "A Go CLI tool for semantic version management and releases"
-    license: "MIT"
-    test: |
-      system "#{bin}/bump --version"
-    install: |
-      bin.install "bump"
+nfpms:
+  - id: bump
+    package_name: bump
+    vendor: Yves Peckstadt
+    homepage: https://github.com/ypeckstadt/bump
+    maintainer: Yves Peckstadt <peckstadt.yves@gmail.com>
+    description: Bump - Release a new version of your project with ease.
+    license: MIT
+    formats:
+      - deb
+      - rpm
+      - apk
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
