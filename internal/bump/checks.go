@@ -1,10 +1,10 @@
 package bump
 
 import (
+	"bump/internal/config"
 	"fmt"
 	"os/exec"
 	"strings"
-	"bump/internal/config"
 )
 
 type Checker struct {
@@ -27,24 +27,24 @@ func (c *Checker) RunAll() error {
 		{"Lint", c.checkLint},
 		{"Go mod tidy", c.checkGoModTidy},
 	}
-	
+
 	for _, check := range checks {
 		if c.cfg.Verbose {
 			printInfo(fmt.Sprintf("Running %s check...", check.name))
 		}
-		
+
 		if err := check.fn(); err != nil {
 			if c.cfg.Verbose {
 				printError(fmt.Sprintf("❌ %s check failed: %v", check.name, err))
 			}
 			continue
 		}
-		
+
 		if c.cfg.Verbose {
 			printSuccess(fmt.Sprintf("✅ %s check passed", check.name))
 		}
 	}
-	
+
 	return nil
 }
 
@@ -53,7 +53,7 @@ func (c *Checker) checkBuild() error {
 		printInfo("[DRY RUN] Would run: go build")
 		return nil
 	}
-	
+
 	cmd := exec.Command("go", "build", "./...")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -67,7 +67,7 @@ func (c *Checker) checkTests() error {
 		printInfo("[DRY RUN] Would run: go test")
 		return nil
 	}
-	
+
 	cmd := exec.Command("go", "test", "./...")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -84,7 +84,7 @@ func (c *Checker) checkLint() error {
 		printInfo("[DRY RUN] Would run: golangci-lint run")
 		return nil
 	}
-	
+
 	cmd := exec.Command("golangci-lint", "run")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -101,7 +101,7 @@ func (c *Checker) checkGoModTidy() error {
 		printInfo("[DRY RUN] Would run: go mod tidy")
 		return nil
 	}
-	
+
 	cmd := exec.Command("go", "mod", "tidy")
 	output, err := cmd.CombinedOutput()
 	if err != nil {

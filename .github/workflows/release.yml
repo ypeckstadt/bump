@@ -1,0 +1,47 @@
+name: Bump Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  bump-release:
+    name: Bump Binary Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go for Bump release
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+
+      - name: Run GoReleaser for Bump
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Homebrew Formula
+        uses: mislav/bump-homebrew-formula-action@v3
+        with:
+          formula-name: bump
+          formula-path: Formula/bump.rb
+          homebrew-tap: ypeckstadt/homebrew-tap
+          download-url: https://github.com/${{ github.repository }}/archive/${{ github.ref_name }}.tar.gz
+          commit-message: |
+            Update bump to ${{ github.ref_name }}
+            
+            Created by https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}

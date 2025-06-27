@@ -17,7 +17,7 @@ type Version struct {
 func Parse(versionStr string) (*Version, error) {
 	re := regexp.MustCompile(`^v?(\d+)\.(\d+)\.(\d+)`)
 	matches := re.FindStringSubmatch(versionStr)
-	
+
 	if len(matches) != 4 {
 		return nil, fmt.Errorf("invalid version format: %s", versionStr)
 	}
@@ -90,11 +90,11 @@ func NewFromString(versionStr string) *Version {
 	if versionStr == "" || versionStr == "v0.0.0" {
 		return &Version{Major: 0, Minor: 0, Patch: 0}
 	}
-	
+
 	version, err := Parse(versionStr)
 	if err != nil {
 		return &Version{Major: 0, Minor: 0, Patch: 0}
 	}
-	
+
 	return version
 }

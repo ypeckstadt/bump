@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/spf13/cobra"
 	"bump/internal/bump"
 	"bump/internal/config"
 	"bump/pkg/version"
+
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -16,7 +17,7 @@ var (
 
 func main() {
 	cfg = config.New()
-	
+
 	rootCmd := &cobra.Command{
 		Use:   "bump",
 		Short: "A version bumping tool for semantic versioning",
