@@ -189,7 +189,173 @@ func (r *Release) createAndPushTag(tag, message string) error {
 	}
 
 	printSuccess(fmt.Sprintf("✅ Successfully created and pushed tag %s", tag))
+	
+	// Handle branch creation based on configuration
+	if r.cfg.NoBranch {
+		// Skip branch creation entirely when nobranch flag is set
+		printInfo("Skipping branch creation (--nobranch flag set)")
+	} else if r.cfg.CreateBranch {
+		// Non-interactive mode with CLI arguments
+		if err := r.handleBranchCreationNonInteractive(tag); err != nil {
+			printError(fmt.Sprintf("Failed to create/manage branch: %v", err))
+		}
+	} else {
+		// Interactive mode - ask if user wants to create a branch
+		if r.confirmProceed("Do you want to create a branch for this tag?") {
+			if err := r.handleBranchCreation(tag); err != nil {
+				printError(fmt.Sprintf("Failed to create/manage branch: %v", err))
+			}
+		}
+	}
+	
 	printInfo("GitHub Actions should now trigger the release workflow")
+	return nil
+}
+
+func (r *Release) handleBranchCreation(tag string) error {
+	// Get source branch
+	defaultBranch, err := r.git.GetDefaultBranch()
+	if err != nil {
+		defaultBranch = "main"
+	}
+	
+	sourceBranch, err := r.promptSourceBranch(defaultBranch)
+	if err != nil {
+		return err
+	}
+	
+	// Get target branch name
+	targetBranch, err := r.promptTargetBranch(tag)
+	if err != nil {
+		return err
+	}
+	
+	// Check if branch exists
+	if r.git.BranchExists(targetBranch) {
+		printWarning(fmt.Sprintf("Branch %s already exists", targetBranch))
+		if r.confirmProceed(fmt.Sprintf("Do you want to merge %s into %s?", sourceBranch, targetBranch)) {
+			if err := r.git.MergeBranch(sourceBranch, targetBranch); err != nil {
+				return err
+			}
+			printSuccess(fmt.Sprintf("✅ Successfully merged %s into %s", sourceBranch, targetBranch))
+		}
+	} else {
+		// Create new branch
+		if err := r.git.CreateBranch(targetBranch, sourceBranch); err != nil {
+			return err
+		}
+		printSuccess(fmt.Sprintf("✅ Successfully created branch %s from %s", targetBranch, sourceBranch))
+	}
+	
+	// Ask if user wants to push the branch
+	if r.confirmProceed(fmt.Sprintf("Do you want to push branch %s to origin?", targetBranch)) {
+		if err := r.git.PushBranch(targetBranch); err != nil {
+			return err
+		}
+		printSuccess(fmt.Sprintf("✅ Successfully pushed branch %s", targetBranch))
+	}
+	
+	return nil
+}
+
+func (r *Release) promptSourceBranch(defaultBranch string) (string, error) {
+	prompt := promptui.Prompt{
+		Label:   "Source branch",
+		Default: defaultBranch,
+	}
+	
+	return prompt.Run()
+}
+
+func (r *Release) promptTargetBranch(defaultName string) (string, error) {
+	// Remove 'v' prefix from default branch name if present
+	if strings.HasPrefix(defaultName, "v") {
+		defaultName = strings.TrimPrefix(defaultName, "v")
+	}
+	
+	prompt := promptui.Prompt{
+		Label:   "Target branch name",
+		Default: defaultName,
+	}
+	
+	return prompt.Run()
+}
+
+func (r *Release) handleBranchCreationNonInteractive(tag string) error {
+	// Get source branch from config or default
+	sourceBranch := r.cfg.SourceBranch
+	if sourceBranch == "" {
+		defaultBranch, err := r.git.GetDefaultBranch()
+		if err != nil {
+			sourceBranch = "main"
+		} else {
+			sourceBranch = defaultBranch
+		}
+	}
+	
+	// Get target branch name from config or use tag without 'v' prefix
+	targetBranch := r.cfg.BranchName
+	if targetBranch == "" {
+		targetBranch = tag
+		// Remove 'v' prefix from tag for branch name
+		if strings.HasPrefix(targetBranch, "v") {
+			targetBranch = strings.TrimPrefix(targetBranch, "v")
+		}
+	}
+	
+	printInfo(fmt.Sprintf("Creating branch %s from %s...", targetBranch, sourceBranch))
+	
+	// Check if branch exists
+	if r.git.BranchExists(targetBranch) {
+		printWarning(fmt.Sprintf("Branch %s already exists", targetBranch))
+		if r.cfg.AutoMerge {
+			printInfo(fmt.Sprintf("Auto-merging %s into %s...", sourceBranch, targetBranch))
+			if err := r.git.MergeBranch(sourceBranch, targetBranch); err != nil {
+				return err
+			}
+			printSuccess(fmt.Sprintf("✅ Successfully merged %s into %s", sourceBranch, targetBranch))
+		} else {
+			printInfo("Skipping merge (use --auto-merge to merge automatically)")
+		}
+	} else {
+		// Create new branch
+		if err := r.git.CreateBranch(targetBranch, sourceBranch); err != nil {
+			return err
+		}
+		printSuccess(fmt.Sprintf("✅ Successfully created branch %s from %s", targetBranch, sourceBranch))
+	}
+	
+	// Push branch if auto-push is enabled
+	if r.cfg.AutoPush {
+		printInfo(fmt.Sprintf("Pushing branch %s to origin...", targetBranch))
+		if err := r.git.PushBranch(targetBranch); err != nil {
+			return err
+		}
+		printSuccess(fmt.Sprintf("✅ Successfully pushed branch %s", targetBranch))
+	} else {
+		printInfo("Branch not pushed (use --auto-push to push automatically)")
+	}
+	
+	return nil
+}
+
+func (r *Release) ListTags() error {
+	tags, err := r.git.GetAllTags()
+	if err != nil {
+		return fmt.Errorf("failed to get tags: %w", err)
+	}
+	
+	if len(tags) == 0 {
+		printInfo("No tags found in this repository")
+		return nil
+	}
+	
+	printInfo(fmt.Sprintf("Found %d tags (sorted by creation date, newest first):\n", len(tags)))
+	
+	for _, tag := range tags {
+		fmt.Println(tag)
+	}
+	
 	return nil
 }
 

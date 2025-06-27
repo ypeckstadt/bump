@@ -22,6 +22,8 @@ bump                    # Interactive release mode
 - ⚡ **Quick Release Mode** - Fast command-line releases perfect for CI/CD
 - 📋 **Pre-release Checks** - Automatic build, test, and lint validation
 - 🏷️ **Git Integration** - Tag creation, validation, and pushing
+- 🌿 **Branch Management** - Create release branches with tag creation
+- 📊 **Tag Listing** - View all tags sorted by creation date
 - 🎨 **Colored Output** - Clear visual feedback with progress indicators
 - 🔍 **Dry Run Mode** - Preview changes without making them
 
@@ -137,6 +139,9 @@ bump version --repo
 # Show detailed build info
 bump version --build-info
 
+# List all tags sorted by creation date (newest first)
+bump tags
+
 # Dry run mode (preview without changes)
 bump --dry-run
 
@@ -146,6 +151,46 @@ bump --verbose
 # Help
 bump --help
 ```
+
+### Branch Management (New!)
+
+#### Interactive Branch Creation
+After creating a tag, bump will ask if you want to create a branch:
+- Choose source branch (defaults to main/master)
+- Choose target branch name (defaults to tag name)
+- Merge automatically if branch exists
+- Push branch to origin
+
+#### Non-Interactive Branch Creation
+For CI/CD pipelines, use CLI flags for automatic branch creation:
+
+```bash
+# Create branch with default settings
+bump quick patch --create-branch
+
+# Specify all branch options
+bump quick minor \
+  --create-branch \
+  --source-branch main \
+  --branch-name release/v1.3.0 \
+  --auto-merge \
+  --auto-push
+
+# Full example: Create patch release with automatic branch
+bump quick patch --create-branch --auto-push
+
+# Skip branch creation entirely
+bump --nobranch
+bump quick patch --nobranch
+```
+
+#### Branch Options
+- `--nobranch` - Skip branch creation prompt entirely
+- `--create-branch` - Create a branch for the tag
+- `--source-branch <name>` - Source branch (default: main/master)
+- `--branch-name <name>` - Target branch name (default: tag name without 'v' prefix)
+- `--auto-merge` - Automatically merge if branch exists
+- `--auto-push` - Automatically push the branch
 
 ## Version Types
 
@@ -229,6 +274,14 @@ Running pre-release checks...
 Creating tag v1.2.4...
 Pushing tag v1.2.4...
 ✅ Successfully created and pushed tag v1.2.4
+
+? Do you want to create a branch for this tag? (y/N) y
+? Source branch: (main) main
+? Target branch name: (1.2.4) release/1.2.4
+✅ Successfully created branch release/1.2.4 from main
+? Do you want to push branch release/1.2.4 to origin? (y/N) y
+✅ Successfully pushed branch release/1.2.4
+
 GitHub Actions should now trigger the release workflow
 ```
 
@@ -241,6 +294,19 @@ Creating minor release: v1.2.3 → v1.3.0
 Creating tag v1.3.0...
 Pushing tag v1.3.0...
 ✅ Successfully created and pushed tag v1.3.0
+```
+
+### List Tags
+
+```bash
+$ bump tags
+Found 5 tags (sorted by creation date, newest first):
+
+v1.3.0 2024-01-15 14:30:00 +0000
+v1.2.4 2024-01-14 10:15:30 +0000
+v1.2.3 2024-01-10 09:45:00 +0000
+v1.2.2 2024-01-08 16:20:00 +0000
+v1.2.1 2024-01-05 11:00:00 +0000
 ```
 
 ## License

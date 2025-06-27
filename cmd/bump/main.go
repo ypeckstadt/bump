@@ -34,6 +34,12 @@ It provides both interactive and quick release modes with git integration.`,
 
 	rootCmd.PersistentFlags().BoolVar(&cfg.DryRun, "dry-run", false, "Show what would happen without making changes")
 	rootCmd.PersistentFlags().BoolVar(&cfg.Verbose, "verbose", false, "Enable verbose output")
+	rootCmd.PersistentFlags().BoolVar(&cfg.NoBranch, "nobranch", false, "Skip branch creation prompt entirely")
+	rootCmd.PersistentFlags().BoolVar(&cfg.CreateBranch, "create-branch", false, "Create a branch for the tag")
+	rootCmd.PersistentFlags().StringVar(&cfg.SourceBranch, "source-branch", "", "Source branch for creating the new branch (default: main/master)")
+	rootCmd.PersistentFlags().StringVar(&cfg.BranchName, "branch-name", "", "Name for the new branch (default: tag name without 'v' prefix)")
+	rootCmd.PersistentFlags().BoolVar(&cfg.AutoMerge, "auto-merge", false, "Automatically merge if branch exists")
+	rootCmd.PersistentFlags().BoolVar(&cfg.AutoPush, "auto-push", false, "Automatically push the branch")
 
 	// Add standard --version flag for CI compatibility
 	var showVersion bool
@@ -101,7 +107,18 @@ It provides both interactive and quick release modes with git integration.`,
 		},
 	}
 
-	rootCmd.AddCommand(versionCmd, quickCmd, interactiveCmd, statusCmd)
+	tagsCmd := &cobra.Command{
+		Use:   "tags",
+		Short: "List all tags sorted by creation date (newest first)",
+		Run: func(cmd *cobra.Command, args []string) {
+			release := bump.NewRelease(cfg)
+			if err := release.ListTags(); err != nil {
+				log.Fatal(err)
+			}
+		},
+	}
+
+	rootCmd.AddCommand(versionCmd, quickCmd, interactiveCmd, statusCmd, tagsCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)
