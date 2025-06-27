@@ -244,60 +244,6 @@ Pushing tag v1.3.0...
 ✅ Successfully created and pushed tag v1.3.0
 ```
 
-## Pre-release Checks
-
-The tool automatically runs these checks before creating releases:
-
-- **Build** - `go build ./...`
-- **Tests** - `go test ./...` 
-- **Lint** - `golangci-lint run` (if available)
-- **Go mod tidy** - `go mod tidy`
-
-## Integration with CI/CD
-
-### GitHub Actions
-
-```yaml
-- name: Quick Release
-  run: |
-    ./bump quick patch
-```
-
-### Manual Workflow
-
-```bash
-# 1. Finish feature work
-git add . && git commit -m "Add new feature"
-
-# 2. Run interactive release  
-bump
-
-# 3. Choose version type
-# 4. Let CI/CD handle the rest
-```
-
-## Safety Features
-
-- Working directory cleanliness validation
-- Tag existence checking
-- Multiple confirmation prompts (interactive mode)
-- Dry-run mode for testing
-- Graceful error handling
-
-## Requirements
-
-- Git repository with write access
-- Go 1.24 or later
-- Optional: golangci-lint for linting checks
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Run `bump` to create a release (dogfooding!)
-
 ## License
 
 MIT License - see LICENSE file for details
