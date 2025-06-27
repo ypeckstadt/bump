@@ -6,7 +6,7 @@ A Go CLI tool for semantic version management and releases, inspired by shell re
 
 ```bash
 # Install via Homebrew (recommended)
-brew tap ypeckstadt/tap
+brew tap ypeckstadt/homebrew-tap
 brew install bump
 
 # Or install with Go
