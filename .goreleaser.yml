@@ -29,9 +29,9 @@ builds:
         goarch: arm
     ldflags:
       - -s -w
-      - -X github.com/ypeckstadt/bump/pkg/version.Version={{.Version}}
-      - -X github.com/ypeckstadt/bump/pkg/version.Commit={{.Commit}}
-      - -X github.com/ypeckstadt/bump/pkg/version.Date={{.Date}}
+      - -X bump/pkg/version.Version={{.Version}}
+      - -X bump/pkg/version.GitCommit={{.Commit}}
+      - -X bump/pkg/version.BuildDate={{.Date}}
 
 archives:
   - id: bump
@@ -95,6 +95,19 @@ release:
     go install github.com/ypeckstadt/bump/cmd/bump@{{ .Tag }}
     ```
 
+brews:
+  - name: bump
+    repository:
+      owner: ypeckstadt
+      name: homebrew-tap
+      branch: main
+    homepage: "https://github.com/ypeckstadt/bump"
+    description: "A Go CLI tool for semantic version management and releases"
+    license: "MIT"
+    test: |
+      system "#{bin}/bump --version"
+    install: |
+      bin.install "bump"
 
 nfpms:
   - id: bump
