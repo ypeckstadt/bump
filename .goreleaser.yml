@@ -102,6 +102,7 @@ brews:
       name: homebrew-tap
       branch: main
       token: "{{ .Env.COMMITTER_TOKEN }}"
+    folder: Formula
     homepage: "https://github.com/ypeckstadt/bump"
     description: "A Go CLI tool for semantic version management and releases"
     license: "MIT"
