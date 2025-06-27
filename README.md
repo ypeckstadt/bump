@@ -157,9 +157,10 @@ bump --help
 #### Interactive Branch Creation
 After creating a tag, bump will ask if you want to create a branch:
 - Choose source branch (defaults to main/master)
-- Choose target branch name (defaults to tag name)
+- Choose target branch name (defaults to tag name without 'v' prefix)
 - Merge automatically if branch exists
 - Push branch to origin
+- Automatically returns to your original branch after operations
 
 #### Non-Interactive Branch Creation
 For CI/CD pipelines, use CLI flags for automatic branch creation:
@@ -281,6 +282,7 @@ Pushing tag v1.2.4...
 ✅ Successfully created branch release/1.2.4 from main
 ? Do you want to push branch release/1.2.4 to origin? (y/N) y
 ✅ Successfully pushed branch release/1.2.4
+Returned to branch main
 
 GitHub Actions should now trigger the release workflow
 ```

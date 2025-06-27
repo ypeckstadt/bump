@@ -122,6 +122,20 @@ func (g *Client) GetCurrentBranch() (string, error) {
 	return strings.TrimSpace(string(output)), nil
 }
 
+func (g *Client) CheckoutBranch(branch string) error {
+	if g.cfg.DryRun {
+		fmt.Printf("[DRY RUN] Would checkout branch: %s\n", branch)
+		return nil
+	}
+
+	cmd := exec.Command("git", "checkout", branch)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to checkout branch %s: %w", branch, err)
+	}
+
+	return nil
+}
+
 func (g *Client) GetDefaultBranch() (string, error) {
 	// Try to get the default branch from remote origin
 	cmd := exec.Command("git", "rev-parse", "--abbrev-ref", "origin/HEAD")

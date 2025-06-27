@@ -213,6 +213,21 @@ func (r *Release) createAndPushTag(tag, message string) error {
 }
 
 func (r *Release) handleBranchCreation(tag string) error {
+	// Remember the current branch to return to it later
+	originalBranch, err := r.git.GetCurrentBranch()
+	if err != nil {
+		return fmt.Errorf("failed to get current branch: %w", err)
+	}
+	
+	// Ensure we return to the original branch at the end
+	defer func() {
+		if err := r.git.CheckoutBranch(originalBranch); err != nil {
+			printError(fmt.Sprintf("Failed to return to original branch %s: %v", originalBranch, err))
+		} else {
+			printInfo(fmt.Sprintf("Returned to branch %s", originalBranch))
+		}
+	}()
+	
 	// Get source branch
 	defaultBranch, err := r.git.GetDefaultBranch()
 	if err != nil {
@@ -269,9 +284,7 @@ func (r *Release) promptSourceBranch(defaultBranch string) (string, error) {
 
 func (r *Release) promptTargetBranch(defaultName string) (string, error) {
 	// Remove 'v' prefix from default branch name if present
-	if strings.HasPrefix(defaultName, "v") {
-		defaultName = strings.TrimPrefix(defaultName, "v")
-	}
+	defaultName = strings.TrimPrefix(defaultName, "v")
 	
 	prompt := promptui.Prompt{
 		Label:   "Target branch name",
@@ -282,6 +295,21 @@ func (r *Release) promptTargetBranch(defaultName string) (string, error) {
 }
 
 func (r *Release) handleBranchCreationNonInteractive(tag string) error {
+	// Remember the current branch to return to it later
+	originalBranch, err := r.git.GetCurrentBranch()
+	if err != nil {
+		return fmt.Errorf("failed to get current branch: %w", err)
+	}
+	
+	// Ensure we return to the original branch at the end
+	defer func() {
+		if err := r.git.CheckoutBranch(originalBranch); err != nil {
+			printError(fmt.Sprintf("Failed to return to original branch %s: %v", originalBranch, err))
+		} else {
+			printInfo(fmt.Sprintf("Returned to branch %s", originalBranch))
+		}
+	}()
+	
 	// Get source branch from config or default
 	sourceBranch := r.cfg.SourceBranch
 	if sourceBranch == "" {
@@ -298,9 +326,7 @@ func (r *Release) handleBranchCreationNonInteractive(tag string) error {
 	if targetBranch == "" {
 		targetBranch = tag
 		// Remove 'v' prefix from tag for branch name
-		if strings.HasPrefix(targetBranch, "v") {
-			targetBranch = strings.TrimPrefix(targetBranch, "v")
-		}
+		targetBranch = strings.TrimPrefix(targetBranch, "v")
 	}
 	
 	printInfo(fmt.Sprintf("Creating branch %s from %s...", targetBranch, sourceBranch))
