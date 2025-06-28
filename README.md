@@ -257,14 +257,18 @@ bump quick patch --nobranch
 
 If you encounter issues with the Homebrew installation:
 
+Update Homebrew first:
 ```bash
-# Update Homebrew first
 brew update
+```
 
-# If tap already exists, update it
+If tap already exists, update it:
+```bash
 brew tap ypeckstadt/tap --force
+```
 
-# Reinstall if needed
+Reinstall if needed:
+```bash
 brew uninstall bump
 brew install bump
 ```
@@ -273,11 +277,13 @@ brew install bump
 
 If `go install` fails:
 
+Check Go version (needs 1.22+):
 ```bash
-# Check Go version (needs 1.22+)
 go version
+```
 
-# Clear module cache if needed
+Clear module cache if needed:
+```bash
 go clean -modcache
 go install github.com/ypeckstadt/bump/cmd/bump@latest
 ```
