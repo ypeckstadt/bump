@@ -1,7 +1,7 @@
 package bump
 
 import (
-	"bump/internal/config"
+	"github.com/ypeckstadt/bump/internal/config"
 	"fmt"
 	"os/exec"
 	"strings"

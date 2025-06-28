@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	"bump/internal/bump"
-	"bump/internal/config"
-	"bump/pkg/version"
+	"github.com/ypeckstadt/bump/internal/bump"
+	"github.com/ypeckstadt/bump/internal/config"
+	"github.com/ypeckstadt/bump/pkg/version"
 
 	"github.com/spf13/cobra"
 )

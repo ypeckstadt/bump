@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"bump/internal/config"
-	"bump/internal/git"
-	"bump/internal/version"
+	"github.com/ypeckstadt/bump/internal/config"
+	"github.com/ypeckstadt/bump/internal/git"
+	"github.com/ypeckstadt/bump/internal/version"
 
 	"github.com/fatih/color"
 	"github.com/manifoldco/promptui"

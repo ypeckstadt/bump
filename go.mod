@@ -1,6 +1,4 @@
-module bump
-
-replace bump => ./
+module github.com/ypeckstadt/bump
 
 go 1.24
 

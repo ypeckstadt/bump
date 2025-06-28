@@ -4,16 +4,23 @@ A Go CLI tool for semantic version management and releases, inspired by shell re
 
 ## Quick Start
 
+### Install via Homebrew (recommended)
 ```bash
-# Install via Homebrew (recommended)
 brew install ypeckstadt/homebrew-tap/bump
+```
 
-# Or install with Go
+### Or install with Go
+```bash
 go install github.com/ypeckstadt/bump/cmd/bump@latest
+```
 
-# Start using bump
+### Start using bump
+```bash
 bump --version
-bump                    # Interactive release mode
+```
+
+```bash
+bump
 ```
 
 ## Features
@@ -31,18 +38,20 @@ bump                    # Interactive release mode
 
 ### Option 1: Homebrew (Recommended for macOS/Linux)
 
+Add the custom tap:
 ```bash
-# Add the custom tap
 brew tap ypeckstadt/tap
+```
 
-# Install bump
+Install bump:
+```bash
 brew install bump
 ```
 
 ### Option 2: Go Install
 
+Install directly with Go (requires Go 1.22+):
 ```bash
-# Install directly with Go (requires Go 1.22+)
 go install github.com/ypeckstadt/bump/cmd/bump@latest
 ```
 
@@ -52,43 +61,51 @@ go install github.com/ypeckstadt/bump/cmd/bump@latest
 2. Download the appropriate binary for your platform
 3. Extract and move to your PATH:
 
+For macOS/Linux:
 ```bash
-# macOS/Linux
 sudo mv bump /usr/local/bin/
+```
 
-# Or add to your personal bin directory
+Or add to your personal bin directory:
+```bash
 mv bump ~/bin/
 ```
 
 ### Option 4: Build from Source
 
+Clone and build:
 ```bash
-# Clone and build
 git clone https://github.com/ypeckstadt/bump
 cd bump
 make build
+```
 
-# Install to your PATH
+Install to your PATH:
+```bash
 make install
 ```
 
 ### Verify Installation
 
+Check installation:
 ```bash
-# Check installation
 bump --version
+```
 
-# Show detailed build info
+Show detailed build info:
+```bash
 bump version --build-info
 ```
 
 ### Updating Bump
 
+Update via Homebrew:
 ```bash
-# Update via Homebrew
 brew upgrade bump
+```
 
-# Update via Go install
+Update via Go install:
+```bash
 go install github.com/ypeckstadt/bump/cmd/bump@latest
 ```
 
@@ -96,11 +113,13 @@ go install github.com/ypeckstadt/bump/cmd/bump@latest
 
 ### Interactive Mode (Recommended)
 
+Start interactive release process:
 ```bash
-# Start interactive release process
 bump
+```
 
-# Or explicitly use interactive mode
+Or explicitly use interactive mode:
+```bash
 bump interactive
 ```
 
@@ -114,41 +133,63 @@ Features:
 
 ### Quick Mode
 
+Quick patch release (v1.2.3 → v1.2.4):
 ```bash
-# Quick patch release (v1.2.3 → v1.2.4)
 bump quick patch
+```
 
-# Quick minor release (v1.2.3 → v1.3.0)  
+Quick minor release (v1.2.3 → v1.3.0):
+```bash
 bump quick minor
+```
 
-# Quick major release (v1.2.3 → v2.0.0)
+Quick major release (v1.2.3 → v2.0.0):
+```bash
 bump quick major
 ```
 
 ### Other Commands
 
+Show bump tool version (CI-friendly):
 ```bash
-# Show bump tool version (CI-friendly)
-bump version                    # 1.0.0
-bump --version                  # 1.0.0
+bump version
+```
 
-# Show repository version from git tags  
-bump status                     # Current repository version: v1.2.3
+```bash
+bump --version
+```
+
+Show repository version from git tags:
+```bash
+bump status
+```
+
+```bash
 bump version --repo
+```
 
-# Show detailed build info
+Show detailed build info:
+```bash
 bump version --build-info
+```
 
-# List all tags sorted by creation date (newest first)
+List all tags sorted by creation date (newest first):
+```bash
 bump tags
+```
 
-# Dry run mode (preview without changes)
+Dry run mode (preview without changes):
+```bash
 bump --dry-run
+```
 
-# Verbose output
+Verbose output:
+```bash
 bump --verbose
+```
 
-# Help
+Help:
+```bash
 bump --help
 ```
 
@@ -165,23 +206,32 @@ After creating a tag, bump will ask if you want to create a branch:
 #### Non-Interactive Branch Creation
 For CI/CD pipelines, use CLI flags for automatic branch creation:
 
+Create branch with default settings:
 ```bash
-# Create branch with default settings
 bump quick patch --create-branch
+```
 
-# Specify all branch options
+Specify all branch options:
+```bash
 bump quick minor \
   --create-branch \
   --source-branch main \
   --branch-name release/v1.3.0 \
   --auto-merge \
   --auto-push
+```
 
-# Full example: Create patch release with automatic branch
+Full example: Create patch release with automatic branch:
+```bash
 bump quick patch --create-branch --auto-push
+```
 
-# Skip branch creation entirely
+Skip branch creation entirely:
+```bash
 bump --nobranch
+```
+
+```bash
 bump quick patch --nobranch
 ```
 
