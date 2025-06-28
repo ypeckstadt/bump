@@ -292,14 +292,20 @@ go install github.com/ypeckstadt/bump/cmd/bump@latest
 
 If `bump` command is not found after installation:
 
+For Go install, add GOPATH/bin to PATH:
 ```bash
-# For Go install, add GOPATH/bin to PATH
 echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
+```
 
-# For Homebrew, ensure Homebrew bin is in PATH
-echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.bashrc  # Apple Silicon
-echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bashrc     # Intel Mac
+For Homebrew on Apple Silicon:
+```bash
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.bashrc
+```
+
+For Homebrew on Intel Mac:
+```bash
+echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bashrc
 ```
 
 ## Examples
